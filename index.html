@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workday Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            color: #4a90e2;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #357ABD;
+        }
+        .result {
+            font-size: 1.2em;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Workday Calculator</h1>
+        <form id="workdayForm">
+            <label for="month">--เลือก--เดือน--</label>
+            <select id="month" required>
+                <option value="">เลือก</option>
+                <option value="0">มกราคม</option>
+                <option value="1">กุมภาพันธ์</option>
+                <option value="2">มีนาคม</option>
+                <option value="3">เมษายน</option>
+                <option value="4">พฤษภาคม</option>
+                <option value="5">มิถุนายน</option>
+                <option value="6">กรกฎาคม</option>
+                <option value="7">สิงหาคม</option>
+                <option value="8">กันยายน</option>
+                <option value="9">ตุลาคม</option>
+                <option value="10">พฤศจิกายน</option>
+                <option value="11">ธันวาคม</option>
+            </select>
+            <label for="year">กรอกปี</label>
+            <input type="number" id="year" placeholder="20xx" required>
+            <label for="extraHolidays">กรอกวันหยุด - (ไม่รวมวันหยุดสุดสัปดาห์)</label>
+            <input type="number" id="extraHolidays" placeholder="กรอกหยุดกี่วัน 1,2 รวมวันหยุดวันพิเศษ อื่นๆ" min="0" required>
+            <button type="submit">Calculate Workdays</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        document.getElementById('workdayForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const month = parseInt(document.getElementById('month').value);
+            const year = parseInt(document.getElementById('year').value);
+            const extraHolidays = parseInt(document.getElementById('extraHolidays').value);
+
+            if (isNaN(month) || isNaN(year) || isNaN(extraHolidays) || extraHolidays < 0) {
+                alert("Please provide valid inputs.");
+                return;
+            }
+
+            const totalDays = new Date(year, month + 1, 0).getDate();
+            let workdays = 0;
+
+            for (let day = 1; day <= totalDays; day++) {
+                const date = new Date(year, month, day);
+                const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                if (!isWeekend) {
+                    workdays++;
+                }
+            }
+
+            // Subtract extra holidays from workdays
+            workdays -= extraHolidays;
+
+            // Prevent negative workdays
+            workdays = Math.max(workdays, 0);
+
+            document.getElementById('result').textContent = `มาทำงาน: ${workdays}`;
+        });
+    </script>
+</body>
+</html>
